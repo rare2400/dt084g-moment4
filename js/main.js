@@ -122,7 +122,7 @@ function loadStorage() {
     let todoItems = JSON.parse(localStorage.getItem("todo"));
 
     //kontrollerar lagrade "todo"s för att förhindra att loopen körs när det inte finns några "todoItems"
-    if (todoItems !== null) {
+    if(todoItems !== null) {
         //loopar arrayen med dem lagrade "Att göra"
         for (i = 0; i < todoItems.length; i++) {
 
