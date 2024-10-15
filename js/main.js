@@ -22,8 +22,6 @@ function init() {
 
     //läser in lagrad lista
     loadStorage();
-
-    console.log(localStorage)
 }
 
 //Funktion för att kontrollera längden av texten i textfältet
@@ -121,8 +119,8 @@ function loadStorage() {
     //Läser in och konverterar tillbaka JSON-strängen till en array
     let todoItems = JSON.parse(localStorage.getItem("todo"));
 
-    //kontrollerar lagrade "todo"s för att förhindra att loopen körs när det inte finns några "todoItems"
-    if(todoItems !== null) {
+    //kontrollerar lagrade "todo"s med en if-sats för att förhindra att loopen körs när det inte finns några "todoItems"
+    if (todoItems !== null) {
         //loopar arrayen med dem lagrade "Att göra"
         for (i = 0; i < todoItems.length; i++) {
 
