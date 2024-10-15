@@ -22,6 +22,8 @@ function init() {
 
     //läser in lagrad lista
     loadStorage();
+
+    console.log(localStorage)
 }
 
 //Funktion för att kontrollera längden av texten i textfältet
@@ -72,13 +74,29 @@ function addItem() {
     storeItem();
 }
 
-//funktion för att radera "att göra" när man klickar på den
-function deleteItem(e) {
-    let parentEl = e.target.parentNode;
-    parentEl.removeChild(e.target);
+//funktion för att radera (DOM) "att göra" när man klickar på den
+function deleteItem(el) {
 
-    //lagrar listan på nytt så inga raderade element kommer tillbaka
+    //variabel för att hämta "att göran" som klickas på
+    let task = el.target.innerHTML;
+    //elementet tas bort från sidan
+    el.target.remove();
+
     storeItem();
+    // //raderar "attgöran" från local storage
+    removeItem(task)
+}
+
+//funktion för att radera "att göran" från local storage
+function removeItem(task) {
+    //läser in pch konverterar tillbaka json-strängen till arrayen av lagrad data
+    let todoItems = JSON.parse(localStorage.getItem("todo")) || [];
+
+    //filtrerar ut den klickade todon som ska raderas från localstorage
+    todoItems = todoItems.filter(item => item !== task);
+
+    //uppdaterar localStorage
+    localStorage.setItem("todo", JSON.stringify(todoItems));
 }
 
 //Lagra "att göran"
@@ -91,15 +109,11 @@ function storeItem() {
     const taskArr = [];
 
     //for-loop för att loopa och lagra arrayen
-    for (i = 0; i < todoItems.length; i++)
+    for (i = 0; i < todoItems.length; i++) {
         taskArr.push(todoItems[i].innerHTML);
-
-    /*eftersom det inte går att lagra en array i web storage så konverteras den 
-    till en JSON-sträng */
-    let jsonStr = JSON.stringify(taskArr);
-
+    }
     //lagra i web storage
-    localStorage.setItem("todo", jsonStr);
+    localStorage.setItem("todo", JSON.stringify(taskArr));
 }
 
 //funktion för att läsa in eller skriva ut lagrad data i Web Storage
@@ -107,19 +121,22 @@ function loadStorage() {
     //Läser in och konverterar tillbaka JSON-strängen till en array
     let todoItems = JSON.parse(localStorage.getItem("todo"));
 
-    //loopar arrayen med dem lagrade "Att göra"
-    for (i = 0; i < todoItems.length; i++) {
+    //kontrollerar lagrade "todo"s för att förhindra att loopen körs när det inte finns några "todoItems"
+    if (todoItems !== null) {
+        //loopar arrayen med dem lagrade "Att göra"
+        for (i = 0; i < todoItems.length; i++) {
 
-        /* Skriver ut det som sparats i Web Storage till skärmen genom att återanvända koden 
-        från tidigare när elementen skapades från textfältet */
-        const newEl = document.createElement("article");
-        let taskTextNode = document.createTextNode(todoItems[i]);
-        newEl.appendChild(taskTextNode);
-        newEl.className = "todo";
-        todoListEl.appendChild(newEl);
+            /* Skriver ut det som sparats i Web Storage till skärmen genom att återanvända koden 
+            från tidigare när elementen skapades från textfältet */
+            const newEl = document.createElement("article");
+            let taskTextNode = document.createTextNode(todoItems[i]);
+            newEl.appendChild(taskTextNode);
+            newEl.className = "todo";
+            todoListEl.appendChild(newEl);
 
-        // Elementet som klickas på raderas
-        newEl.addEventListener("click", deleteItem);
+            // Elementet som skapats raderas när det klickas på
+            newEl.addEventListener("click", deleteItem);
+        }
     }
 }
 
