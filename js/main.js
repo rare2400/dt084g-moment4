@@ -61,10 +61,7 @@ function addItem() {
     todoListEl.appendChild(newEl);
 
     //lägger till en händelsehanterare för klick på nya element för att kunna radera dem
-    //vid klick på elementet anropas en anonym funktion där elementet får variabeln "el"
-    newEl.addEventListener("click", function (el) {
-        el.target.remove();
-    });
+    newEl.addEventListener("click", deleteItem);
 
     //rensar input-fältet efter tillägg
     inputTask.value = "";
@@ -72,6 +69,15 @@ function addItem() {
     addTodoButton.disabled = true;
 
     //anropar lagring av tillägg
+    storeItem();
+}
+
+//funktion för att radera "att göra" när man klickar på den
+function deleteItem(e) {
+    let parentEl = e.target.parentNode;
+    parentEl.removeChild(e.target);
+
+    //lagrar listan på nytt så inga raderade element kommer tillbaka
     storeItem();
 }
 
@@ -101,7 +107,7 @@ function loadStorage() {
     //Läser in och konverterar tillbaka JSON-strängen till en array
     let todoItems = JSON.parse(localStorage.getItem("todo"));
 
-    //loopar arrayen med dem lagrade kurserna
+    //loopar arrayen med dem lagrade "Att göra"
     for (i = 0; i < todoItems.length; i++) {
 
         /* Skriver ut det som sparats i Web Storage till skärmen genom att återanvända koden 
@@ -113,12 +119,7 @@ function loadStorage() {
         todoListEl.appendChild(newEl);
 
         // Elementet som klickas på raderas
-        newEl.addEventListener("click", function (el) {
-            el.target.remove();
-
-            //lagrar listan på nytt så inga raderade element kommer tillbaka
-            storeItem();
-        });
+        newEl.addEventListener("click", deleteItem);
     }
 }
 
@@ -128,7 +129,4 @@ function clearStorage() {
 
     //Listan rensas från skärmen
     todoListEl.innerHTML = "";
-
-    //anropar utskrift
-    loadStorage();
 }
